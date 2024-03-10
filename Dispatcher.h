@@ -19,6 +19,6 @@ typedef struct {
 	IOdev io; 
 } Process;
 
-Process* readDispatchList(char* fileName, int count);
+Process* readDispatchList(char* fileName, int *count);
 
-void runDispatcher(Process* jobList, int count); 
+void runDispatcher(Process* jobList, int *count); 
