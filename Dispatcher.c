@@ -1,4 +1,4 @@
-#include <Dispatcher.h>
+#include "Dispatcher.h"
 
 Process* readDispatchList (char* fileName, int *count){
     FILE *file = fopen(fileName, "r");
