@@ -1,56 +1,34 @@
 #include "Dispatcher.h"
 
-Process* readDispatchList (char* fileName, int *count){
-    FILE *file = fopen(fileName, "r");
-    if (!file)
-    {
-        perror("Failed to open file");
-        return NULL;
-    }
+Process* readDispatchList(char* fileName, int *count);
 
-    char line[256];
-    int tempCount = 0;
+void runDispatcher(Process* jobList, int *count);
 
-    // First, count the number of lines
-    while (fgets(line, sizeof(line), file)) {
-        tempCount++;
-    }
+void runDispatcher(Process* jobList, int *count) {
+	int currentTime = 0;
 
-    Process *p = (Process *)malloc(tempCount * sizeof(Process));
-    if (!p)
-    {
-        fclose(file);
-        return NULL; // Failed to allocate memory.
-    }
+	// Implement a simple Round Robin scheduler
+	int quantum = 1; // Set the quantum to 1 for this example
 
-    fseek(file, 0, SEEK_SET);
-    int i = 0;
-    while (fgets(line, sizeof(line), file)) {
-        sscanf(line, "%d, %d, %d, %d, %d, %d, %d, %d",
-               &p[i].arrivalT,
-               &p[i].priority,
-               &p[i].execT,
-               &p[i].memMB,
-               &p[i].io.print,
-               &p[i].io.scan,
-               &p[i].io.modems,
-               &p[i].io.cd);
+	while (*count > 0) {
+    	for (int i = 0; i < *count; i++) {
+        	if (jobList[i].arrivalT <= currentTime && jobList[i].execT > 0) {
+            	// Process the job
+            	printf("Processing job %d at time %d...\n", i+1, currentTime);
+            	jobList[i].execT -= quantum;
 
-        // Set the correct quantum for the process based on its priority level
-
-        i++;
-    }
-
-    fclose(file);
-    *count = tempCount; // Set the count for the caller.
-    return p;
-}
-
-// Queue logic here : add, remove, print and sort
-
-// resource logic here : block and free resources
-
-void runDispatcher (Process* jobList, int *count){
-
+            	if (jobList[i].execT <= 0) {
+                	printf("Job %d completed.\n", i+1);
+                	// Remove the completed job from the list
+                	for (int j = i; j < *count - 1; j++) {
+                    	jobList[j] = jobList[j + 1];
+                	}
+                	(*count)--;
+                	i--; // Adjust index after removal
+            	}
+            	currentTime += quantum;
+        	}
+    	}
+	}
 }
 
