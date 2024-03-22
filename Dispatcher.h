@@ -34,13 +34,10 @@ typedef struct MemoryBlock {
     bool isAvailable;
 } MemoryBlock;
 
-// Assuming a definition for TOTAL_MEMORY_BLOCKS, which should match your dispatcher.c setup
 #define TOTAL_MEMORY 1024 // Total memory in MBytes
 #define RT_MEMORY_RESERVE 64 // Reserved memory for RT processes
-#define AVERAGE_PROCESS_SIZE 64 // Assuming each process takes up 64 MB on average, adjust as needed
-//#define TOTAL_MEMORY_BLOCKS (TOTAL_MEMORY - RT_MEMORY_RESERVE) / AVERAGE_PROCESS_SIZE // Example calculation
+#define AVERAGE_PROCESS_SIZE 64 
 
-//extern MemoryBlock memoryBlocks[TOTAL_MEMORY_BLOCKS]; // Assuming external definition
 
 typedef struct Process {
     int arrivalT;
@@ -50,7 +47,6 @@ typedef struct Process {
     IOdev io;
     int quantum;
     struct Process* next; // For queue linking
-    // Add memory start if not included in your dispatcher.c
     int memoryStart; // Memory block start index for the process
 } Process;
 
@@ -60,12 +56,12 @@ void runDispatcher(Process* jobList, int count);
 void enqueue(Process **head, Process *newProcess);
 Process* dequeue(Process **head);
 void setQuantum(Process *process);
-void initializeMemoryBlocks(void); // If your setup requires initialization of memory blocks
+void initializeMemoryBlocks(void); 
 bool allocateMemory(Process *process);
 void freeMemory(Process *process);
 void freeResources(Process *process);
 void executeProcess(Process *process);
-void tryProcessExecution(Process **queue); // For managing and executing processes in the queue
+void tryProcessExecution(Process **queue);
 
 void logStatus(const char* message, int memAvailable, Process* process);
 int calculateAvailableMemory(void);
